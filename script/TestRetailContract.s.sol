@@ -9,7 +9,7 @@ contract TestRetailContractScript is Script {
     RetailContract public retailContract;
     RetailToken public storeToken;
     address public constant CONTRACT_ADDRESS =
-        0xA396463c453262d459969103646046ef5fe50ed2;
+        0x85d6F0f1b61992d18AF39ebd520b5209418900a3;
 
     function setUp() public {}
 
