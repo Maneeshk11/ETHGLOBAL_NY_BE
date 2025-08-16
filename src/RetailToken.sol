@@ -10,12 +10,11 @@ contract RetailToken is ERC20, Ownable {
     constructor(
         string memory name,
         string memory symbol,
-        uint8 decimals_,
         uint256 initialSupply,
         address owner
     ) ERC20(name, symbol) Ownable(owner) {
-        _decimals = decimals_;
-        _mint(owner, initialSupply * 10 ** decimals_);
+        _decimals = 6;
+        _mint(owner, initialSupply * 10 ** _decimals);
     }
 
     function decimals() public view virtual override returns (uint8) {
