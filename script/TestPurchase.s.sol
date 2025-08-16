@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import {Script, console} from "forge-std/Script.sol";
 import {RetailContract} from "../src/RetailContract.sol";
 import {RetailToken} from "../src/RetailToken.sol";
+import {IERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 
 contract TestPurchaseScript is Script {
     RetailContract public retailContract;
@@ -33,11 +34,11 @@ contract TestPurchaseScript is Script {
             storeToken.balanceOf(CUSTOMER)
         );
 
-        // Distribute tokens to customer (500 tokens)
+        // Distribute tokens to customer (500 tokens, 6 decimals)
         address[] memory customers = new address[](1);
         uint256[] memory amounts = new uint256[](1);
         customers[0] = CUSTOMER;
-        amounts[0] = 500 * 10 ** 18; // 500 tokens
+        amounts[0] = 500 * 1e6; // 500 tokens
         retailContract.distributeTokens(customers, amounts);
 
         console.log(
@@ -51,8 +52,8 @@ contract TestPurchaseScript is Script {
             0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d
         );
 
-        // Approve tokens for spending
-        storeToken.approve(CONTRACT_ADDRESS, 100 * 10 ** 18);
+        // Approve tokens for spending (6 decimals)
+        storeToken.approve(CONTRACT_ADDRESS, 100 * 1e6);
 
         // Purchase 1 T-shirt
         retailContract.purchaseProduct(1, 1);

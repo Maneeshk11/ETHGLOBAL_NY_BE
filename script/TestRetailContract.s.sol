@@ -9,7 +9,7 @@ contract TestRetailContractScript is Script {
     RetailContract public retailContract;
     RetailToken public storeToken;
     address public constant CONTRACT_ADDRESS =
-        0x5FbDB2315678afecb367f032d93F642f64180aa3;
+        0xA396463c453262d459969103646046ef5fe50ed2;
 
     function setUp() public {}
 
@@ -33,7 +33,7 @@ contract TestRetailContractScript is Script {
         console.log("Store Name:", name);
         console.log("Description:", description);
         console.log("Token Address:", tokenAddress);
-        console.log("Token Balance:", tokenBalance);
+        console.log("Token Balance:", tokenBalance); // base units (6 decimals)
         console.log("Is Active:", isActive);
         console.log("Created At:", createdAt);
 

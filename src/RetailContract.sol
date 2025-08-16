@@ -145,7 +145,7 @@ contract RetailContract is Ownable, ReentrancyGuard {
 		});
 
 		// Pull PYUSD from owner into this contract
-		IERC20(pyusdToken).safeTransferFrom(msg.sender, address(this), _pyusdLiquidity);
+		IERC20(pyusdToken).transferFrom(msg.sender, address(this), _pyusdLiquidity);
 
 		// Bounds: ensure we have enough minted tokens to seed liquidity
 		require(storeToken.balanceOf(address(this)) >= _tokenLiquidity, "Insufficient token liquidity");
@@ -325,7 +325,7 @@ contract RetailContract is Ownable, ReentrancyGuard {
 	function mintAndAddLiquidity(
 		uint256 _tokenAmount,
 		uint256 _pyusdAmount
-	) external onlyOwner nonReentrant {
+	) external onlyOwner {
 		require(storeInfo.isActive, "Store not initialized");
 		require(uniswapV2Router != address(0) && pyusdToken != address(0), "Router/PYUSD not set");
 		require(_tokenAmount > 0 && _pyusdAmount > 0, "Invalid amounts");
@@ -337,7 +337,7 @@ contract RetailContract is Ownable, ReentrancyGuard {
 		storeInfo.tokenBalance += _tokenAmount;
 
 		// Pull PYUSD from owner into this contract
-		IERC20(pyusdToken).safeTransferFrom(msg.sender, address(this), _pyusdAmount);
+		IERC20(pyusdToken).transferFrom(msg.sender, address(this), _pyusdAmount);
 
 		// Approve router to pull tokens
 		IERC20(address(storeToken)).forceApprove(uniswapV2Router, 0);
