@@ -91,16 +91,16 @@ contract RetailContract is Ownable, ReentrancyGuard {
 	constructor() Ownable(msg.sender) {}
 
 	/**
-	 * @dev Initialize the retail contract with store details and tokens, and seed a Uniswap V2-style pool
+	 * @dev Initialize the retail contract and seed a Uniswap V2-style pool using ALL minted store tokens
+	 *      paired with the provided PYUSD amount from the owner.
 	 * @param _storeName Name of the retail store
 	 * @param _storeDescription Description of the store
 	 * @param _tokenName Name of the store token
 	 * @param _tokenSymbol Symbol of the store token
-	 * @param _initialTokenSupply Initial supply of tokens to mint
+	 * @param _initialTokenSupply Initial supply of tokens to mint (human units; contract applies 6 decimals)
 	 * @param _uniswapV2Router Address of the Uniswap V2-compatible router
 	 * @param _pyusdToken Address of PYUSD token to pair with
-	 * @param _tokenLiquidity Amount of RetailToken (base units) to add as initial liquidity
-	 * @param _pyusdLiquidity Amount of PYUSD (base units) to add as initial liquidity (pulled from owner)
+	 * @param _pyusdLiquidity Amount of PYUSD (base units, 6 decimals) to add as initial liquidity (pulled from owner)
 	 */
 	function initializeStore(
 		string memory _storeName,
@@ -110,7 +110,6 @@ contract RetailContract is Ownable, ReentrancyGuard {
 		uint256 _initialTokenSupply,
 		address _uniswapV2Router,
 		address _pyusdToken,
-		uint256 _tokenLiquidity,
 		uint256 _pyusdLiquidity
 	) external onlyOwner {
 		require(!storeInfo.isActive, "Store already initialized");
@@ -121,7 +120,7 @@ contract RetailContract is Ownable, ReentrancyGuard {
 		);
 		require(_uniswapV2Router != address(0), "Invalid router");
 		require(_pyusdToken != address(0), "Invalid PYUSD");
-		require(_tokenLiquidity > 0 && _pyusdLiquidity > 0, "Invalid liquidity");
+		require(_pyusdLiquidity > 0, "Invalid liquidity");
 
 		uniswapV2Router = _uniswapV2Router;
 		pyusdToken = _pyusdToken;
@@ -147,12 +146,13 @@ contract RetailContract is Ownable, ReentrancyGuard {
 		// Pull PYUSD from owner into this contract
 		IERC20(pyusdToken).transferFrom(msg.sender, address(this), _pyusdLiquidity);
 
-		// Bounds: ensure we have enough minted tokens to seed liquidity
-		require(storeToken.balanceOf(address(this)) >= _tokenLiquidity, "Insufficient token liquidity");
+		// Use the entire minted token balance as liquidity
+		uint256 tokenLiquidity = storeToken.balanceOf(address(this));
+		require(tokenLiquidity > 0, "No minted token balance");
 
 		// Approve router to pull tokens
 		IERC20(address(storeToken)).forceApprove(uniswapV2Router, 0);
-		IERC20(address(storeToken)).forceApprove(uniswapV2Router, _tokenLiquidity);
+		IERC20(address(storeToken)).forceApprove(uniswapV2Router, tokenLiquidity);
 		IERC20(pyusdToken).forceApprove(uniswapV2Router, 0);
 		IERC20(pyusdToken).forceApprove(uniswapV2Router, _pyusdLiquidity);
 
@@ -160,9 +160,9 @@ contract RetailContract is Ownable, ReentrancyGuard {
 		(uint256 amountA, uint256 amountB, uint256 liquidity) = IUniswapV2RouterLike(uniswapV2Router).addLiquidity(
 			address(storeToken),
 			pyusdToken,
-			_tokenLiquidity,
+			tokenLiquidity,
 			_pyusdLiquidity,
-			_tokenLiquidity,
+			tokenLiquidity,
 			_pyusdLiquidity,
 			owner(),
 			block.timestamp + 1 hours

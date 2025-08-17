@@ -32,13 +32,12 @@ contract RetailContractScript is Script {
         address pyusd = vm.envAddress("PYUSD_ADDRESS");
 
         // Liquidity seed amounts (base units, 6 decimals)
-        uint256 tokenLiquidity = 100 * 1e6; // 100 tokens
         uint256 pyusdLiquidity = 100 * 1e6; // 100 PYUSD
 
         // Approve the retail contract to pull PYUSD during initializeStore
         IERC20(pyusd).approve(address(retailContract), pyusdLiquidity);
 
-        // Initialize the store with LP seeding
+        // Initialize the store with LP seeding (all minted tokens; only PYUSD provided)
         retailContract.initializeStore(
             storeName,
             storeDescription,
@@ -47,7 +46,6 @@ contract RetailContractScript is Script {
             initialTokenSupplyUnits,
             uniswapRouter,
             pyusd,
-            tokenLiquidity,
             pyusdLiquidity
         );
 

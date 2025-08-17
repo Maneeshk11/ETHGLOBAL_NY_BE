@@ -84,7 +84,6 @@ contract RetailContractTest is Test {
             INITIAL_SUPPLY_UNITS,
             address(router),
             address(pyusd),
-            SEED_LIQUIDITY,
             SEED_LIQUIDITY
         );
 
@@ -106,8 +105,8 @@ contract RetailContractTest is Test {
         assertEq(name, "Test Store");
         assertEq(description, "A test retail store");
         assertTrue(isActive);
-        // initial token balance should be initial supply minus tokens sent to LP
-        assertEq(tokenBalance, INITIAL_SUPPLY - SEED_LIQUIDITY);
+        // All minted tokens are supplied to LP at initialization
+        assertEq(tokenBalance, 0);
         assertGt(createdAt, 0);
         assertTrue(tokenAddress != address(0));
     }
@@ -190,7 +189,6 @@ contract RetailContractTest is Test {
             500_000,
             address(router),
             address(pyusd),
-            10_000 * DECIMALS,
             10_000 * DECIMALS
         );
     }
