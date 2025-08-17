@@ -8,6 +8,7 @@ import "lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
 import "./RetailToken.sol";
 
 interface IUniswapV2RouterLike {
+	function factory() external view returns (address);
 	function addLiquidity(
 		address tokenA,
 		address tokenB,
@@ -18,6 +19,10 @@ interface IUniswapV2RouterLike {
 		address to,
 		uint256 deadline
 	) external returns (uint256 amountA, uint256 amountB, uint256 liquidity);
+}
+
+interface IUniswapV2FactoryLike {
+	function getPair(address tokenA, address tokenB) external view returns (address pair);
 }
 
 contract RetailContract is Ownable, ReentrancyGuard {
@@ -376,6 +381,12 @@ contract RetailContract is Ownable, ReentrancyGuard {
 
 	function getPurchaseHistory() external view returns (Purchase[] memory) {
 		return purchases;
+	}
+
+	function getPairAddress() external view returns (address) {
+		require(uniswapV2Router != address(0) && pyusdToken != address(0), "Router/PYUSD not set");
+		address factoryAddress = IUniswapV2RouterLike(uniswapV2Router).factory();
+		return IUniswapV2FactoryLike(factoryAddress).getPair(address(storeToken), pyusdToken);
 	}
 
 	function getCustomerTokenBalance(

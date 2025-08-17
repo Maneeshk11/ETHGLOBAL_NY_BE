@@ -8,7 +8,7 @@ import {IERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.so
 
 contract TestRetailFactoryScript is Script {
 	// Deployed factory address on Sepolia
-	address public constant FACTORY = 0xA8E26B8a731d0aBeF824311aF59F8c0EFd3daC23;
+	address public constant FACTORY = 0x6587563fFa63Ba5d8b0Ea7877810ee1a39f3e164;
 	RetailFactory public factory;
 
 	// Sepolia addresses
