@@ -9,8 +9,7 @@ import {IERC20} from "lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.so
 contract TestPurchaseScript is Script {
     RetailContract public retailContract;
     RetailToken public storeToken;
-    address public constant CONTRACT_ADDRESS =
-        0x5FbDB2315678afecb367f032d93F642f64180aa3;
+    address public CONTRACT_ADDRESS;
     address public constant CUSTOMER =
         0x70997970C51812dc3A010C7d01b50e0d17dc79C8;
     address public constant OWNER = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
@@ -18,6 +17,10 @@ contract TestPurchaseScript is Script {
     function setUp() public {}
 
     function run() public {
+        // Load deployed RetailContract address from env
+        // export RETAIL_CONTRACT_ADDRESS=0x...
+        CONTRACT_ADDRESS = vm.envAddress("RETAIL_CONTRACT_ADDRESS");
+
         // Start with owner to distribute tokens
         vm.startBroadcast(
             0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
