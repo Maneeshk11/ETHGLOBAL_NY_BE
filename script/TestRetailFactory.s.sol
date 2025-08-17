@@ -27,7 +27,7 @@ contract TestRetailFactoryScript is Script {
 		console.log("Store created:", newStore);
 
 		// Approve PYUSD for liquidity seeding
-		uint256 pyusdLiquidity = 20 * 1e6; // 20 PYUSD (6 decimals)
+		uint256 pyusdLiquidity = 5 * 1e6; // 20 PYUSD (6 decimals)
 		IERC20(PYUSD).approve(newStore, pyusdLiquidity);
 
 		// Initialize the store (supply in whole tokens; contract applies 6 decimals)

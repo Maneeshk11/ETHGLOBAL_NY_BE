@@ -17,6 +17,8 @@ contract RetailFactory {
 	mapping(address => address[]) private ownerToStores;
 	// store contract address => owner
 	mapping(address => address) public storeToOwner;
+	// list of all store contract addresses
+	address[] private allStores;
 
 	event StoreDeployed(address indexed owner, address indexed store);
 
@@ -28,12 +30,21 @@ contract RetailFactory {
 		storeAddress = address(store);
 		ownerToStores[msg.sender].push(storeAddress);
 		storeToOwner[storeAddress] = msg.sender;
+		allStores.push(storeAddress);
 
 		emit StoreDeployed(msg.sender, storeAddress);
 	}
 
 	function getStoresByOwner(address owner) external view returns (address[] memory) {
 		return ownerToStores[owner];
+	}
+
+	function getAllStores() external view returns (address[] memory) {
+		return allStores;
+	}
+
+	function getAllStoresLength() external view returns (uint256) {
+		return allStores.length;
 	}
 }
 
